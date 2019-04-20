@@ -4,13 +4,16 @@ from keras.layers.core import Dense
 from keras.layers.recurrent import LSTM
 from keras.models import Sequential
 from sklearn.preprocessing import MinMaxScaler
-import matplotlib.pyplot as plt
 import numpy as np
 import math
 import os
 
-data = np.load("LD_250.npy")
+# DATA_DIR = "../data"
+# data = np.load(os.path.join(DATA_DIR, "LD_250.npy"))
+data = np.load(os.path.join("LD_250.npy"))
+
 STATELESS = False
+
 NUM_TIMESTEPS = 20
 HIDDEN_SIZE = 10
 BATCH_SIZE = 96  # 24 hours (15 min intervals)
@@ -56,7 +59,7 @@ model.compile(loss="mean_squared_error", optimizer="adam",
 
 if STATELESS:
     # stateless
-    model.fit(Xtrain, Ytrain, nb_epoch=NUM_EPOCHS, batch_size=BATCH_SIZE,
+    model.fit(Xtrain, Ytrain, epochs=NUM_EPOCHS, batch_size=BATCH_SIZE,
               validation_data=(Xtest, Ytest),
               shuffle=False)
 else:
@@ -69,7 +72,7 @@ else:
     print(Xtrain.shape, Xtest.shape, Ytrain.shape, Ytest.shape)
     for i in range(NUM_EPOCHS):
         print("Epoch {:d}/{:d}".format(i+1, NUM_EPOCHS))
-        model.fit(Xtrain, Ytrain, batch_size=BATCH_SIZE, nb_epoch=1,
+        model.fit(Xtrain, Ytrain, batch_size=BATCH_SIZE, epochs=1,
                   validation_data=(Xtest, Ytest),
                   shuffle=False)
         model.reset_states()
@@ -77,17 +80,3 @@ else:
 score, _ = model.evaluate(Xtest, Ytest, batch_size=BATCH_SIZE)
 rmse = math.sqrt(score)
 print("\nMSE: {:.3f}, RMSE: {:.3f}".format(score, rmse))
-
-print("Save model to disk")
-model_json = model.to_json()
-with open("model.json", "w") as json_file : 
-    json_file.write(model_json)
-model.save_weights("model.h5")
-
-plt.plot(Ytest, 'r-', label="Usage")
-plt.plot(model.predict(Xtest[:,:,:]), 'b-', label="Predict")
-plt.xlim(0, 96*5)
-plt.legend()
-plt.title("After training")
-plt.show()
-
