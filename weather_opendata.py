@@ -8,7 +8,7 @@ sky_code = ['맑음', '구름조금', '구름많음', '흐림']
 today = date.today()
 today_str = today.strftime('%Y%m%d') 
 
-ServiceKey ='0AXDF73h9IPTxyCWqtC%2Bs4U4DN1l77G9HkUOhgC72PgcxXKc1dWlxpnRihr40m8GqjbDQTuJxppzsrxvzUb1kQ%3D%3D'
+ServiceKey ='발급받은 API키 입력'
 pageNo =1
 numOfRows = 10
 dataType ='JSON'
